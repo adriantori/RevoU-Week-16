@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = exports.registerUser = void 0;
+exports.updatePasswordUser = exports.loginUser = exports.registerUser = void 0;
 const sequelize_1 = require("sequelize");
 const roleModel_1 = __importDefault(require("../models/roleModel"));
 const userModel_1 = __importDefault(require("../models/userModel"));
@@ -59,3 +59,21 @@ function loginUser(username) {
     });
 }
 exports.loginUser = loginUser;
+function updatePasswordUser(email, password) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const user = yield userModel_1.default.update({
+                user_pass: password
+            }, {
+                where: {
+                    user_email: email
+                }
+            });
+            return user;
+        }
+        catch (error) {
+            throw new Error(error.message.replace('Validation error: ', ''));
+        }
+    });
+}
+exports.updatePasswordUser = updatePasswordUser;

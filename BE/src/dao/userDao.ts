@@ -40,4 +40,21 @@ async function loginUser (username: string): Promise<any> {
     }
 }
 
-export { registerUser, loginUser }
+
+async function updatePasswordUser(email: string, password: string): Promise<any> {
+    try {
+        const user = await User.update({
+            user_pass: password
+        },{
+            where:{
+                user_email: email
+            }
+        });
+
+        return user;
+    } catch (error: any) {
+        throw new Error(error.message.replace('Validation error: ', ''));
+    }
+}
+
+export { registerUser, loginUser, updatePasswordUser }

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUserService = exports.registerUserService = void 0;
+exports.updatePasswordUserService = exports.loginUserService = exports.registerUserService = void 0;
 const userDao_1 = require("../dao/userDao");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 function registerUserService(email, username, password) {
@@ -47,3 +47,23 @@ function loginUserService(username, password) {
     });
 }
 exports.loginUserService = loginUserService;
+function updatePasswordUserService(email, password) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const user = yield (0, userDao_1.updatePasswordUser)(email, password);
+            if (user && user.user_pass) {
+                // Compare the provided password with the hashed password
+                const isPasswordCorrect = yield bcrypt_1.default.compare(password, user.user_pass);
+                if (isPasswordCorrect) {
+                    return user; // Password is correct, return the user
+                }
+            }
+            return null; // User not found or incorrect password
+        }
+        catch (error) {
+            console.log('Error updating password:', error.message);
+            throw new Error('An error occurred while updating the password');
+        }
+    });
+}
+exports.updatePasswordUserService = updatePasswordUserService;

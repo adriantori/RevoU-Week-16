@@ -3,7 +3,8 @@ import { Button, Form, Input, Space, Card } from 'antd';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { Notification } from '../../components'
+import { Notification } from '../../components';
+import { API_URL } from '../../constants';
 
 interface AccountLogin {
     email: string;
@@ -25,7 +26,7 @@ const Login: React.FC = () => {
 
     async function postLoginData(values: AccountLogin, navigate: Function) {
         try {
-            const fetching = await fetch('https://mock-api.arikmpt.com/api/user/login', {
+            const fetching = await fetch(API_URL + '/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

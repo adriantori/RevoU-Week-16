@@ -1,29 +1,23 @@
-import { createPool, Pool, PoolConnection } from 'mysql2/promise';
-import { Request, Response, NextFunction } from 'express';
-import { MYSQL_URI } from '../configs/constants';
-import { Sequelize } from 'sequelize';
-
-
-interface CustomRequest extends Request {
-    pool: PoolConnection;
-}
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sequelize = exports.attachDB = void 0;
+const promise_1 = require("mysql2/promise");
+const constants_1 = require("../configs/constants");
+const sequelize_1 = require("sequelize");
 // Construct the database URI
-const dbUri = MYSQL_URI ||'mysql://root:@127.0.0.1:3306/revou_w16';
-
+const dbUri = constants_1.MYSQL_URI || 'mysql://root:@127.0.0.1:3306/revou_w16';
 // Create a connection pool using the URI
-const pool: Pool = createPool({
+const pool = (0, promise_1.createPool)({
     uri: dbUri,
 });
-
 // Create Sequelize instance using the URI
-const sequelize = new Sequelize(dbUri, {
+const sequelize = new sequelize_1.Sequelize(dbUri, {
     dialect: 'mysql',
     logQueryParameters: true,
 });
-
+exports.sequelize = sequelize;
 // Middleware function to attach the database connection pool to the request object
-const attachDB = (req: CustomRequest, res: Response, next: NextFunction): void => {
+const attachDB = (req, res, next) => {
     pool.getConnection().then((connection) => {
         req.pool = connection;
         next();
@@ -33,5 +27,4 @@ const attachDB = (req: CustomRequest, res: Response, next: NextFunction): void =
         res.status(500).json({ message: 'Database error' });
     });
 };
-
-export { attachDB, sequelize };
+exports.attachDB = attachDB;

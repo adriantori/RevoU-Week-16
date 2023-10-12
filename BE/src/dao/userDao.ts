@@ -2,9 +2,10 @@ import { Sequelize } from "sequelize";
 import Role from "../models/roleModel";
 import User from "../models/userModel";
 
-async function registerUser(username: string, password: string): Promise<any> {
+async function registerUser(email: string, username: string, password: string): Promise<any> {
     try {
         const user = await User.create({
+            user_email: email,
             user_name: username,
             user_pass: password,
             role_id: 2

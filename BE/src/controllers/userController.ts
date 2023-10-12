@@ -1,26 +1,16 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken'
+import cookie from 'cookie'
 import { JWT_SIGN } from '../configs/constants';
 
 import { loginUserService, registerUserService } from '../services/userService';
 
 async function registerUserController(req: Request, res: Response) {
-    const { username, password } = req.body;
+    const { email, username, password } = req.body;
 
     try {
-        if (password.length < 8) {
-            return res.status(400).json({
-                message: 'Password must be at least 8 characters long',
-            });
-        }
 
-        if (!/^(?=.*[a-zA-Z])(?=.*[0-9])/.test(password)) {
-            return res.status(400).json({
-                message: 'Password must contain both letters and numbers',
-            });
-        }
-
-        const user = await registerUserService(username, password);
+        const user = await registerUserService(email, username, password);
 
         if (user) {
             res.status(201).json({
@@ -50,6 +40,12 @@ async function loginUserController(req: Request, res: Response) {
         if (user) {
             const token = jwt.sign({ userId: user.user_id, username: user.user_name, role: user.role.role_name }, JWT_SIGN!);
             
+            res.setHeader('Set-Cookie', cookie.serialize('token', token, {
+                httpOnly: true,
+                maxAge: 60, // 1 minute in seconds
+                path: '/', // Optional: specify the cookie path
+            }));
+
             res.status(201).json({
                 message: 'Login success',
                 data: user, token

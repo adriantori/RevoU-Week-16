@@ -4,6 +4,7 @@ import Role from './roleModel';
 
 class User extends Model {
     public user_id!: number;
+    public user_email!: string;
     public user_name!: string;
     public user_pass!: string;
     public role_id!: 1 | 2;
@@ -27,10 +28,14 @@ User.init(
             primaryKey: true,
             autoIncrement: true,
         },
+        user_email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         user_name: {
             type: DataTypes.STRING,
             allowNull: false,
-unique: true,
+            unique: true,
             validate: {
                 isUnique: async function (this: User, username: string): Promise<void> {
                     const validationError = await this.validateUsername(username);

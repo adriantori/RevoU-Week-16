@@ -4,7 +4,7 @@ import { PlusSquareOutlined, HighlightOutlined, ClockCircleOutlined} from '@ant-
 
 const items: MenuProps['items'] = [
     {
-        label: 'React Unit Testing',
+        label: 'IDK what im doing this week',
         key: 'title',
         icon: <PlusSquareOutlined />,
     },
@@ -14,7 +14,7 @@ const items: MenuProps['items'] = [
         icon: <HighlightOutlined />,
     },
     {
-        label: 'RevoU Week 14',
+        label: 'RevoU Week 16',
         key: 'class',
         icon: <ClockCircleOutlined />,
     }

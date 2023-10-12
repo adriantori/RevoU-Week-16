@@ -3,28 +3,29 @@ import { Button, Form, Input, Space, Card } from 'antd';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { Notification } from '../../components'
+import { Notification } from '../../components';
+import { API_URL } from '../../constants';
 
 interface AccountRegister {
-    name: string;
-    email: string;
-    password: string;
+    user_email: string;
+    user_name: string;
+    user_pass: string;
 }
 
 const initialValues = {
-    name: '',
-    email: '',
-    password: ''
+    user_email: '',
+    user_name: '',
+    user_pass: ''
 }
 
 const validationSchema = yup.object({
-    name: yup.string().required('Name must exist'),
-    email: yup.string()
-        .email('Invalid email format')
-        .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email format. Must include domain.')
-        .required('Email must exist')
+    user_email: yup.string()
+        .email('Invalid user_email format')
+        .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid user_email format. Must include domain.')
+        .required('user_email must exist')
         .min(10),
-    password: yup.string().required('Password must exist').min(8, 'Minimum of 8 characters')
+    user_name: yup.string().required('user_name must exist'),
+    user_pass: yup.string().required('user_pass must exist')
 })
 
 const Register: React.FC = () => {
@@ -32,8 +33,9 @@ const Register: React.FC = () => {
     const navigate = useNavigate();
 
     async function postRegisterData(values: AccountRegister) {
+        console.log(values)
         try {
-            const fetching = await fetch('https://mock-api.arikmpt.com/api/user/register', {
+            const fetching = await fetch(API_URL + '/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -71,47 +73,47 @@ const Register: React.FC = () => {
     return (
         <Card title="Please Register To Our Platform" headStyle={{ textAlign: 'center' }} style={{ width: '60vw' }}>
             <Form onFinish={formik.handleSubmit}>
-                <Form.Item
-                    name="name"
-                    rules={[{ required: true, message: 'Please input your Name!' }]}
-                >
-                    <Input
-                        prefix={<UserOutlined className="site-form-item-icon" />}
-                        placeholder="Name"
-                        value={formik.values.name}
-                        onChange={formik.handleChange('name')}
-                        status={formik.errors.name && 'error'}
-                    />
-                </Form.Item>
-                <Form.Item
-                    name="email"
+            <Form.Item
+                    name="user_email"
                     hasFeedback
-                    validateStatus={formik.touched.email && formik.errors.email ? 'error' : 'success'}
-                    help={formik.touched.email && formik.errors.email ? formik.errors.email : ''}
+                    validateStatus={formik.touched.user_email && formik.errors.user_email ? 'error' : 'success'}
+                    help={formik.touched.user_email && formik.errors.user_email ? formik.errors.user_email : ''}
                 >
                     <>
                         <Input
                             prefix={<UserOutlined className="site-form-item-icon" />}
-                            placeholder="Email"
-                            value={formik.values.email}
-                            onChange={formik.handleChange('email')}
+                            placeholder="user_email"
+                            value={formik.values.user_email}
+                            onChange={formik.handleChange('user_email')}
                         />
                     </>
 
                 </Form.Item>
                 <Form.Item
-                    name="password"
+                    name="user_name"
+                    rules={[{ required: true, message: 'Please input your user_name!' }]}
+                >
+                    <Input
+                        prefix={<UserOutlined className="site-form-item-icon" />}
+                        placeholder="user_name"
+                        value={formik.values.user_name}
+                        onChange={formik.handleChange('user_name')}
+                        status={formik.errors.user_name && 'error'}
+                    />
+                </Form.Item>
+                <Form.Item
+                    name="user_pass"
                     hasFeedback
-                    validateStatus={formik.touched.password && formik.errors.password ? 'error' : 'success'}
-                    help={formik.touched.password && formik.errors.password ? formik.errors.password : ''}
+                    validateStatus={formik.touched.user_pass && formik.errors.user_pass ? 'error' : 'success'}
+                    help={formik.touched.user_pass && formik.errors.user_pass ? formik.errors.user_pass : ''}
                 >
                     <Input
                         prefix={<LockOutlined className="site-form-item-icon" />}
-                        type="password"
-                        placeholder="Password"
-                        value={formik.values.password}
-                        onChange={formik.handleChange('password')}
-                        status={formik.errors.password && 'error'}
+                        type="user_pass"
+                        placeholder="user_pass"
+                        value={formik.values.user_pass}
+                        onChange={formik.handleChange('user_pass')}
+                        status={formik.errors.user_pass && 'error'}
                     />
                 </Form.Item>
                 <Space direction="horizontal" size="middle" style={{ display: 'flex', justifyContent: 'space-around' }}>

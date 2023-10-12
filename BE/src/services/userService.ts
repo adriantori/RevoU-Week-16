@@ -1,11 +1,11 @@
 import { registerUser as registerUserDao, loginUser as loginUserDao } from "../dao/userDao";
 import bcrypt from 'bcrypt';
 
-async function registerUserService(username: string, password: string) {
+async function registerUserService(email: string, username: string, password: string) {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user = await registerUserDao(username, hashedPassword);
+        const user = await registerUserDao(email, username, hashedPassword);
         return user;
     } catch (error: any) {
         throw new Error(error.message);

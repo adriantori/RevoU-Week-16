@@ -14,9 +14,8 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
-const port = PORT;
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`)
 });
 
 export default app;

@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUserController = exports.registerUserController = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const cookie_1 = __importDefault(require("cookie"));
 const constants_1 = require("../configs/constants");
 const userService_1 = require("../services/userService");
 function registerUserController(req, res) {
@@ -51,6 +52,11 @@ function loginUserController(req, res) {
             console.log(user);
             if (user) {
                 const token = jsonwebtoken_1.default.sign({ userId: user.user_id, username: user.user_name, role: user.role.role_name }, constants_1.JWT_SIGN);
+                res.setHeader('Set-Cookie', cookie_1.default.serialize('token', token, {
+                    httpOnly: true,
+                    maxAge: 60,
+                    path: '/', // Optional: specify the cookie path
+                }));
                 res.status(201).json({
                     message: 'Login success',
                     data: user, token

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUserController = exports.registerUserController = void 0;
+exports.logoutUserController = exports.loginUserController = exports.registerUserController = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const cookie_1 = __importDefault(require("cookie"));
 const constants_1 = require("../configs/constants");
@@ -52,9 +52,14 @@ function loginUserController(req, res) {
             console.log(user);
             if (user) {
                 const token = jsonwebtoken_1.default.sign({ userId: user.user_id, username: user.user_name, role: user.role.role_name }, constants_1.JWT_SIGN);
-                res.setHeader('Set-Cookie', cookie_1.default.serialize('token', token, {
+                res.cookie('loginCookie', cookie_1.default.serialize('token', token, {
                     httpOnly: true,
                     maxAge: 60,
+                    path: '/', // Optional: specify the cookie path
+                }));
+                res.cookie('loginCookieRefresh', cookie_1.default.serialize('token', token, {
+                    httpOnly: true,
+                    maxAge: 600,
                     path: '/', // Optional: specify the cookie path
                 }));
                 res.status(201).json({
@@ -76,3 +81,10 @@ function loginUserController(req, res) {
     });
 }
 exports.loginUserController = loginUserController;
+function logoutUserController(req, res) {
+    // Set the token cookie's expiration to a past date to remove it
+    res.cookie('loginCookie', '', { expires: new Date(0) });
+    res.cookie('loginCookieRefresh', '', { expires: new Date(0) });
+    res.status(200).json({ message: 'Logout successful' });
+}
+exports.logoutUserController = logoutUserController;

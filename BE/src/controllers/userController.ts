@@ -39,10 +39,16 @@ async function loginUserController(req: Request, res: Response) {
         console.log(user);
         if (user) {
             const token = jwt.sign({ userId: user.user_id, username: user.user_name, role: user.role.role_name }, JWT_SIGN!);
-            
-            res.setHeader('Set-Cookie', cookie.serialize('token', token, {
+
+            res.cookie('loginCookie', cookie.serialize('token', token, {
                 httpOnly: true,
                 maxAge: 60, // 1 minute in seconds
+                path: '/', // Optional: specify the cookie path
+            }));
+
+            res.cookie('loginCookieRefresh', cookie.serialize('token', token, {
+                httpOnly: true,
+                maxAge: 600, // 1 minute in seconds
                 path: '/', // Optional: specify the cookie path
             }));
 
@@ -63,4 +69,11 @@ async function loginUserController(req: Request, res: Response) {
     }
 }
 
-export { registerUserController, loginUserController }
+function logoutUserController(req: Request, res: Response) {
+    // Set the token cookie's expiration to a past date to remove it
+    res.cookie('loginCookie', '', { expires: new Date(0) });
+    res.cookie('loginCookieRefresh', '', { expires: new Date(0) });
+    res.status(200).json({ message: 'Logout successful' });
+}
+
+export { registerUserController, loginUserController, logoutUserController }

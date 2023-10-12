@@ -11,7 +11,12 @@ globalMiddleware(app);
 app.use(userRoute);
 
 app.get('/', (req, res) => {
-    res.send('Hello, World!');
+    const tokenCookie = req.cookies['loginCookie'];
+    const tokenCookieRefresh = req.cookies['loginCookieRefresh'];
+
+    res.status(200).json({
+        message:`Token Cookie: ${tokenCookie} | Token Refresh: ${tokenCookieRefresh}`
+    });
 });
 
 app.listen(PORT, () => {

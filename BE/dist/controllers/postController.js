@@ -23,7 +23,6 @@ function createPostController(req, res) {
             const token = req.cookies['loginCookie'];
             const decodedToken = jsonwebtoken_1.default.verify(token, constants_1.JWT_SIGN);
             const userId = decodedToken.userId;
-            console.log(postTitle, userId);
             const post = yield (0, postService_1.createPostService)(postTitle, userId);
             res.status(201).json({
                 message: 'Posted successfully',

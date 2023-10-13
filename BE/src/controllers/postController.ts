@@ -11,7 +11,6 @@ async function createPostController(req: Request, res: Response) {
         const decodedToken: jwt.JwtPayload = jwt.verify(token, JWT_SIGN!) as jwt.JwtPayload;
 
         const userId = decodedToken.userId
-        console.log(postTitle, userId);
 
         const post = await createPostService(postTitle, userId);
         res.status(201).json({

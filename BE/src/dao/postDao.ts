@@ -19,7 +19,7 @@ async function getPosts(): Promise<any> {
     try {
         const posts = await Post.findAll({
             where: {
-                post_isDeleted: 0,
+                is_deleted: 0,
             },
             attributes: ['post_id', 'post_title', 'user_id'],
             include: [
@@ -28,8 +28,7 @@ async function getPosts(): Promise<any> {
                     as: 'user',
                     attributes: ['user_name'],
                 },
-            ],
-            order: [['updatedAt', 'DESC']],
+            ]
         });
 
         return posts.map(post => ({
@@ -48,20 +47,19 @@ async function getUserPostList(username: string): Promise<any> {
     try {
         const posts = await Post.findAll({
             where: {
-                post_isDeleted: 0,
+                is_deleted: 0,
             },
             attributes: ['post_id', 'post_title', 'user_id'],
             include: [
                 {
                     model: User,
                     as: 'user',
-                    where:{
+                    where: {
                         user_name: username
                     },
                     attributes: ['user_name'],
                 },
-            ],
-            order: [['updatedAt', 'DESC']],
+            ]
         });
 
         return posts.map(post => ({
@@ -76,6 +74,22 @@ async function getUserPostList(username: string): Promise<any> {
     }
 }
 
+async function getUserIdByPost(postId: number): Promise<any> {
+    try {
+        const post = await Post.findOne({
+          where: { post_id: postId },
+        });
+    
+        if (post) {
+          return post.user_id;
+        }
+    
+        return null;
+      } catch (error: any) {
+        throw new Error('Error retrieving user ID for post:' + error.message);
+      }
+}
+
 
 async function updatePost(postTitle: string, userId: number, postId: number): Promise<any> {
     try {
@@ -85,7 +99,7 @@ async function updatePost(postTitle: string, userId: number, postId: number): Pr
             user_id: userId
         }, {
             where: {
-              post_id: postId
+                post_id: postId
             }
         })
 
@@ -99,7 +113,7 @@ async function updatePost(postTitle: string, userId: number, postId: number): Pr
 async function deletePost(postId: number): Promise<any> {
     try {
         const post = await Post.update(
-            {post_isDeleted: 1},
+            { is_deleted: 1 },
             {
                 where: {
                     post_id: postId
@@ -114,4 +128,4 @@ async function deletePost(postId: number): Promise<any> {
     }
 }
 
-export { createPost, getPosts, updatePost, deletePost, getUserPostList };
+export { createPost, getPosts, getUserIdByPost, updatePost, deletePost, getUserPostList };

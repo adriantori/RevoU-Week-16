@@ -1,6 +1,6 @@
 import { Router } from "express";
-import cors from 'cors';
-import whitelist from "../middlewares/whitelist";
+import { createPostController, deletePostController, getPostsController, updatePostController } from "../controllers/postController";
+
 
 export const postRoute = Router();
 
@@ -12,3 +12,8 @@ postRoute.get('/testPost', (req, res) => {
         message:`Token Cookie: ${tokenCookie} | Token Refresh: ${tokenCookieRefresh}`
     });
 });
+
+postRoute.post('/create', createPostController);
+postRoute.get('/retrieve', getPostsController);
+postRoute.patch('/update', updatePostController);
+postRoute.delete('/delete', deletePostController);

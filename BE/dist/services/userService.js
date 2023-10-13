@@ -50,7 +50,8 @@ exports.loginUserService = loginUserService;
 function updatePasswordUserService(email, password) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const user = yield (0, userDao_1.updatePasswordUser)(email, password);
+            const hashedPassword = yield bcrypt_1.default.hash(password, 10);
+            const user = yield (0, userDao_1.updatePasswordUser)(email, hashedPassword);
             if (user && user.user_pass) {
                 // Compare the provided password with the hashed password
                 const isPasswordCorrect = yield bcrypt_1.default.compare(password, user.user_pass);

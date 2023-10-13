@@ -28,12 +28,16 @@ Post.init(
                 key: 'user_id',
             },
         },
+        is_deleted: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
     },
     {
         sequelize,
         modelName: 'Post',
         tableName: 'posts',
-        timestamps: true
+        timestamps: false
     }
 );
 

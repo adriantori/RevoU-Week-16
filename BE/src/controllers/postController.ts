@@ -1,14 +1,17 @@
 import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 
-import { createPostService, deletePostService, getPostsService, getUserPostListService, updatePostService } from '../services/postService';
+import { createPostService, deletePostService, getPostsService, getUserIdByPostIdService, getUserPostListService, updatePostService } from '../services/postService';
 import { JWT_SIGN } from '../configs/constants';
 
 async function createPostController(req: Request, res: Response) {
-    const { postTitle } = req.body;
-
     try {
-        const userId = res.locals.userId
+        const { postTitle } = req.body;
+        const token = req.cookies['loginCookie']
+        const decodedToken: jwt.JwtPayload = jwt.verify(token, JWT_SIGN!) as jwt.JwtPayload;
+
+        const userId = decodedToken.userId
+        console.log(postTitle, userId);
 
         const post = await createPostService(postTitle, userId);
         res.status(201).json({
@@ -30,7 +33,7 @@ async function getPostsController(req: Request, res: Response) {
 
         if (roles == 'user') {
             try {
-                const username = decodedToken.user_name;
+                const username = decodedToken.username;
 
                 const post = await getUserPostListService(username);
                 res.status(200).json({
@@ -60,10 +63,25 @@ async function getPostsController(req: Request, res: Response) {
 }
 
 async function updatePostController(req: Request, res: Response) {
-    const { postTitle, postId } = req.body;
-
     try {
-        const userId = res.locals.userId
+        const { postTitle, postId } = req.body;
+
+        const token = req.cookies['loginCookie'];
+        const decodedToken: jwt.JwtPayload = jwt.verify(token, JWT_SIGN!) as jwt.JwtPayload;
+
+        const userId = decodedToken.userId
+
+        // Retrieve post information, including the user ID of the post maker
+        const userIdRetrieved: number = await getUserIdByPostIdService(postId);
+
+        if (!userIdRetrieved) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        // Check if the user is authorized to edit the post
+        if (userIdRetrieved !== userId) {
+            return res.status(403).json({ message: 'You are not authorized to edit this post' });
+        }
 
         const post = await updatePostService(postTitle, userId, postId);
         res.status(200).json({
@@ -78,16 +96,36 @@ async function updatePostController(req: Request, res: Response) {
 
 async function deletePostController(req: Request, res: Response) {
     const { postId } = req.body;
-    console.log(postId);
+
     try {
-        const post = await deletePostService(postId);
+        const token = req.cookies['loginCookie'];
+        const decodedToken: jwt.JwtPayload = jwt.verify(token, JWT_SIGN!) as jwt.JwtPayload;
+
+        const userId = decodedToken.userId;
+
+        // Get the user ID associated with the post
+        const postUserId = await getUserIdByPostIdService(postId);
+
+        if (postUserId === null) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        // Check if the user is authorized to delete the post
+        if (postUserId !== userId) {
+            return res.status(403).json({ message: 'You are not authorized to delete this post' });
+        }
+
+        // Delete the post if authorized
+        const deletedPost = await deletePostService(postId);
         res.status(201).json({
             message: 'Post deleted successfully',
-            data: post,
+            data: deletedPost,
         });
     } catch (error) {
+        console.log("error deletePost controller");
         res.status(500).json({ message: 'Error deleting post' });
     }
 }
+
 
 export { createPostController, getPostsController, updatePostController, deletePostController }

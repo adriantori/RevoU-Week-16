@@ -54,7 +54,7 @@ function loginUserController(req, res) {
                 const token = jsonwebtoken_1.default.sign({ userId: user.user_id, username: user.user_name, role: user.role.role_name }, constants_1.JWT_SIGN);
                 res.cookie('loginCookie', token, {
                     httpOnly: true,
-                    maxAge: 1000 * 5,
+                    maxAge: 1000 * 60,
                     path: '/', // Optional: specify the cookie path
                 });
                 res.cookie('loginCookieRefresh', token, {

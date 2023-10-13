@@ -22,18 +22,20 @@ export default function checkLoginCookie(req: Request, res: Response, next: Next
             res.status(201).json({
                 message: 'Current session refreshed'
             })
+            return;
         } catch (error: any) {
             res.status(400).json({
                 message: error.message,
             })
+            return;
         }
-
     } else if (loginCookie) {
         next();
+        return;
     } else {
         res.status(403).json({
             message: "Please logged in before accessing this API"
         })
+        return;
     }
-    next();
 }

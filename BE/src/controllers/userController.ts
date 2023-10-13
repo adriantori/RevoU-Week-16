@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken'
-import cookie from 'cookie'
 import { JWT_SIGN } from '../configs/constants';
 import { v4 as uuidv4 } from 'uuid';
-
 
 import { loginUserService, registerUserService, updatePasswordUserService } from '../services/userService';
 
@@ -42,17 +40,17 @@ async function loginUserController(req: Request, res: Response) {
         if (user) {
             const token = jwt.sign({ userId: user.user_id, username: user.user_name, role: user.role.role_name }, JWT_SIGN!);
 
-            res.cookie('loginCookie', cookie.serialize('token', token, {
+            res.cookie('loginCookie', token, {
                 httpOnly: true,
-                maxAge: 60, // 1 minute in seconds
+                maxAge: 1000 * 5, // 5 seconds
                 path: '/', // Optional: specify the cookie path
-            }));
+            });
 
-            res.cookie('loginCookieRefresh', cookie.serialize('token', token, {
+            res.cookie('loginCookieRefresh', token, {
                 httpOnly: true,
-                maxAge: 600, // 10 minute in seconds
+                maxAge: 600000, // 10 minutes in milliseconds
                 path: '/', // Optional: specify the cookie path
-            }));
+            });
 
             res.status(201).json({
                 message: 'Login success',

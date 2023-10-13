@@ -7,6 +7,8 @@ const express_1 = __importDefault(require("express"));
 const middlewares_1 = __importDefault(require("./middlewares"));
 const constants_1 = require("./configs/constants");
 const userRoute_1 = require("./routes/userRoute");
+const postRoute_1 = require("./routes/postRoute");
+const checkLoginCookie_1 = __importDefault(require("./middlewares/checkLoginCookie"));
 const app = (0, express_1.default)();
 (0, middlewares_1.default)(app);
 app.use(userRoute_1.userRoute);
@@ -17,6 +19,8 @@ app.get('/', (req, res) => {
         message: `Token Cookie: ${tokenCookie} | Token Refresh: ${tokenCookieRefresh}`
     });
 });
+app.use(checkLoginCookie_1.default);
+app.use(postRoute_1.postRoute);
 app.listen(constants_1.PORT, () => {
     console.log(`Server is running on port ${constants_1.PORT}`);
 });

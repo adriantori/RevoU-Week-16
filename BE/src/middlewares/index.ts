@@ -8,5 +8,5 @@ export default (app: Express) => {
   bodyParser(app);
   cookieParser(app);
   helmet(app);
-  logToMongo(app);
+  //logToMongo(app);
 };

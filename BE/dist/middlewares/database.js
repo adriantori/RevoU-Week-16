@@ -12,8 +12,7 @@ const pool = (0, promise_1.createPool)({
 });
 // Create Sequelize instance using the URI
 const sequelize = new sequelize_1.Sequelize(dbUri, {
-    dialect: 'mysql',
-    logQueryParameters: true,
+    dialect: 'mysql'
 });
 exports.sequelize = sequelize;
 // Middleware function to attach the database connection pool to the request object

@@ -1,6 +1,6 @@
 import { Express } from 'express';
 import helmet from './helmet';
-import logToMongo from './logToMongo';
+//import logToMongo from './logToMongo';
 import bodyParser from './bodyParser';
 import cookieParser from './cookieParser';
 

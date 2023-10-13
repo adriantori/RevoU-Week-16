@@ -30,7 +30,9 @@ async function loginUserService(username: string, password: string) {
 
 async function updatePasswordUserService(email: string, password: string) {
     try {
-        const user = await updatePasswordUserDao(email, password);
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const user = await updatePasswordUserDao(email, hashedPassword);
 
         if (user && user.user_pass) {
             // Compare the provided password with the hashed password

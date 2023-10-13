@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const helmet_1 = __importDefault(require("./helmet"));
+//import logToMongo from './logToMongo';
 const bodyParser_1 = __importDefault(require("./bodyParser"));
 const cookieParser_1 = __importDefault(require("./cookieParser"));
 exports.default = (app) => {

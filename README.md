@@ -184,6 +184,7 @@ export default Role; // Export the Role model
 
 // Only 2 roles, Admin and User.
 // 3rd role is redundantdue to no other authorization needs.
+// PS: it's actually possible to add more roles by inserting role_name in database.
 ```
 
 ## GET and other Posts routing
